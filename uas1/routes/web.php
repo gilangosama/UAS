@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,12 +24,24 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    // Route::get('/crud', [PostController::class, 'crud'])->name('crud');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-//route resource
-Route::get('/users', [UserController::class, 'index']);
+    Route::get('/layouts', [PostController::class, 'crud']);
+    // Route::get('/crud', function () {
+    //     return view('crud');
+    // });
+
+    Route::middleware(['auth'])->namespace('Admin')->prefix('admin')->group(function () {
+        Route::resource('products', 'ProductController');
+    }); 
+    
+    Route::prefix('admin')->name('admin.')->namespace('Admin')->group(function () {
+    Route::resource('products', 'ProductController');
+    });
+
 
 require __DIR__.'/auth.php';
